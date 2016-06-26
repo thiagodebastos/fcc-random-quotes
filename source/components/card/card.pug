@@ -1,0 +1,6 @@
+mixin card(title='Default Title', image='img/placeholder.jpg')
+  .card
+    .card__image(style={'background-image': 'url('+image+')'})
+      if block
+        block
+    span.card__title= title
