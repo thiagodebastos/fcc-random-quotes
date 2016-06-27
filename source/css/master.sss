@@ -20,17 +20,23 @@ body
 .header
   flex: 0
   top: 0
+  font-size: 1.75em
   font-family: map(base, font, header)
-  color: map(base, palette, hue1)
+  color: black
+  opacity: map(base, copy, dark, primary)
+  border-bottom: 2px dashed lightgrey
 .quotebox
   font-family: map(base, font, body)
   &--quote
-    font-size: 1.5em
+    font-size: 1.75em
     width: 22em
     line-height: 1.25em
     margin-bottom: 1em
     font-style: italic
-    //NOTE: drop caps from https://css-tricks.com/snippets/css/drop-caps/
+    border-left: 0.25em solid #666
+    padding-left: 1em
+    /*
+    NOTE: drop caps from https://css-tricks.com/snippets/css/drop-caps/
     &:before
       color: grey
       float: left
@@ -39,7 +45,8 @@ body
       padding-top: 4px
       padding-right: 8px
       padding-left: 3px
-      content: '|'
+      content: '"'
+    */
   &--author
     align-self: flex-start;
     margin-bottom: 2em
@@ -55,4 +62,4 @@ body
       flex-grow: 1
       height: 4em
 footer
-  align-self: flex-start;
+  font-size: 0.5em
