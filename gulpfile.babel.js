@@ -4,7 +4,7 @@ import gulp from 'gulp';
 import babel from 'gulp-babel';
 import browserSync from 'browser-sync';
 import concat from 'gulp-concat';
-import data from 'gulp-data';
+// import data from 'gulp-data';
 import del from 'del';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import imagemin from 'gulp-imagemin';
@@ -26,7 +26,7 @@ import rupture from 'rupture';
 import sGrid from 's-grid';
 
 // POSTCSS
-import autoprefixer from 'autoprefixer';
+// import autoprefixer from 'autoprefixer';
 import postcss from 'gulp-postcss';
 import sugarss from 'sugarss';
 import cssnano from 'cssnano';
@@ -38,7 +38,7 @@ import postcssUrl from 'postcss-url';
 import postcssMap from 'postcss-map';
 const opts = {
   basePath: 'source/css/settings',
-  // maps: [ 'example.yml' ],
+  maps: [ 'base.yml' ],
 };
 
 // file source and destination variables
@@ -105,6 +105,7 @@ gulp.task('postcss', () => {
     parser: sugarss,
   };
   gulp.src(postcssSrc)
+  .pipe(plumber())
   // .pipe(newer(postcssDest))
   .pipe(sourcemaps.init())
   .pipe(postcss(processors, settings))
