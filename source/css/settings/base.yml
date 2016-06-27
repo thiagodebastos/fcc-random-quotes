@@ -1,7 +1,7 @@
 # fonts
 font:
   header : "'Helvetica', sans-serif"
-  body : "'Helvetica', sans-serif"
+  body : "Georgia, serif"
 
 # material colour palette
 palette:
