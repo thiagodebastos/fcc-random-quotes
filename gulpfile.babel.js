@@ -45,6 +45,10 @@ const jsDest       = 'build/js';
 const jsVendorSrc  = 'source/js/vendor/*.js';
 const jsVendorDest = 'build/js/vendor';
 
+// Data files
+const dataSrc = 'source/data/**/*';
+const dataDest = 'build/data';
+
 // Handle errors
 function handleError(err) {
   console.log(err.toString());
@@ -64,6 +68,7 @@ gulp.task('serve', ['build'], () => {
   gulp.watch("source/img/**/*", ['images'], browserSync.reload);
   gulp.watch("source/stylus/**/*.styl", ['css']);
   gulp.watch("source/pug/**/*.pug", ['pug']);
+  gulp.watch("source/data/**/*", ['data-copy']);
   gulp.watch("source/js/*.js", ['scripts']);
   gulp.watch("source/js/vendor/*.js", ['scripts-vendor']);
 });
@@ -126,6 +131,16 @@ gulp.task('scripts-vendor', () => {
     }));
 });
 
+// Copy changed data files to build dir
+gulp.task('data-copy', () => {
+  gulp.src(dataSrc)
+    .pipe(newer(dataDest))
+    .pipe(gulp.dest(dataDest))
+    .pipe(browserSync.reload({
+      stream: true,
+    }));
+});
+
 gulp.task('pug', () => {
   gulp.src(pugSrc)
     .pipe(plumber({errorHandler: handleError}))
@@ -147,7 +162,7 @@ gulp.task('clean', del.bind(null, 'build/*', {
 }));
 
 gulp.task('build', (callback) => {
-  runSequence('clean', ['pug', 'images', 'scripts', 'scripts-vendor', 'css'],
+  runSequence('clean', ['data-copy', 'pug', 'images', 'scripts', 'scripts-vendor', 'css'],
     callback);
 });
 
