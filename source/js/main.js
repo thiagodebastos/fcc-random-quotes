@@ -29,6 +29,12 @@ const getQuote = (() => {
   quoteBoxAuthor.text(JSON.stringify(data.quotes[num].author));
   ===========================================================*/
 
+  /*
+  TODO: Each time the function is called a JSON request is made.
+        To improve performance, cache array results and check if
+        they already exist. One way to do this is to use a
+        `checked` variable and fetch data after an if statement.
+  */
   function fetchQuote() {
     const quote = [];
     $.getJSON('./data/quotes.json', (data) => {
