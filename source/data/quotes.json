@@ -1,5 +1,44 @@
 {
-  "test": {
-    "message": "Hello World!"
-  }
+  "quotes": [
+    {
+      "author": "Jiddu Krishnamurti",
+      "quote": "You are the world and the world is you."
+    },
+    {
+      "author": "Jiddu Krishnamurti",
+      "quote": "It is no measure of health to be well adjusted to a profoundly sick society."
+    },
+    {
+      "author": "Alan Watts",
+      "quote": "The only way to make sense out of change is to plunge into it, move with it, and join the dance."
+    },
+    {
+      "author": "Alan Watts",
+      "quote": "No valid plans for the future can be made by those who have no capacity for living now."
+    },
+    {
+      "author": "Bill Hicks",
+      "quote": "This world is just a ride."
+    },
+    {
+      "author": "Bill Hicks",
+      "quote": "Watching television is like taking black spray paint to your third eye."
+    },
+    {
+      "author": "Nicola Tesla",
+      "quote": "The scientists of today think deeply instead of clearly. One must be sane to think clearly, but one can think deeply and be quite insane."
+    },
+    {
+      "author": "Jiddu Krishnamurti",
+      "quote": "The constant assertion of belief is an indication of fear."
+    },
+    {
+      "author": "Che Guevara",
+      "quote": "I am not a liberator. Liberators do not exist. The people liberate themselves."
+    },
+    {
+      "author": "Friedrich Nietzsche",
+      "quote": "Without music, life would be a mistake."
+    }
+  ]
 }
