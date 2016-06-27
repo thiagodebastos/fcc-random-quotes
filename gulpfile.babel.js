@@ -1,7 +1,6 @@
 'use strict';
 
 import gulp from 'gulp';
-import autoprefixer from 'gulp-autoprefixer';
 import babel from 'gulp-babel';
 import browserSync from 'browser-sync';
 import concat from 'gulp-concat';
@@ -26,9 +25,25 @@ import pug from 'gulp-pug';
 import rupture from 'rupture';
 import sGrid from 's-grid';
 
+// POSTCSS
+import autoprefixer from 'autoprefixer';
+import postcss from 'gulp-postcss';
+import sugarss from 'sugarss';
+import cssnano from 'cssnano';
+import cssnext from 'postcss-cssnext';
+import browserReporter from 'postcss-browser-reporter';
+import reporter from 'postcss-reporter';
+import postcssImport from 'postcss-import';
+import postcssUrl from 'postcss-url';
+import postcssMap from 'postcss-map';
+const opts = {
+  basePath: 'source/css/settings',
+  // maps: [ 'example.yml' ],
+};
+
 // file source and destination variables
 
-// pug (formerly jade)
+// HTML: pug (formerly jade)
 const pugSrc  = 'source/pug/views/**/*.pug';
 
 // Images
@@ -36,8 +51,8 @@ const imgSrc       = 'source/img/**/*';
 const imgDest      = 'build/img';
 
 // Stylesheets
-const cssSrc       = 'source/stylus/*.styl';
-const cssDest      = 'build/css';
+const postcssSrc       = 'source/css/**/*.sss';
+const postcssDest      = 'build/css';
 
 // Sripts
 const jsSrc        = 'source/js/*.js';
@@ -55,37 +70,48 @@ function handleError(err) {
   this.emit('end');
 }
 
-// Static Server + watching stylus/html/js/image files
+// Static Server + watching sss/html/js/image files
 gulp.task('serve', ['build'], () => {
 
-  browserSync({
+  browserSync.init(null, {
+    files: ['build/css/*.css', 'build/*.html', 'build/js/*.js', 'build/data/*.json'],
     server: {
        baseDir: './build',
     },
     notify: false,
+    open: false,
   });
 
   gulp.watch("source/img/**/*", ['images'], browserSync.reload);
-  gulp.watch("source/stylus/**/*.styl", ['css']);
-  gulp.watch("source/pug/**/*.pug", ['pug']);
-  gulp.watch("source/data/**/*", ['data-copy']);
-  gulp.watch("source/js/*.js", ['scripts']);
-  gulp.watch("source/js/vendor/*.js", ['scripts-vendor']);
+  gulp.watch("source/css/**/*.sss", ['postcss']);
+  gulp.watch("source/pug/**/*.pug", ['pug'], browserSync.reload);
+  gulp.watch("source/data/**/*", ['data-copy'], browserSync.reload);
+  gulp.watch("source/js/*.js", ['scripts'], browserSync.reload);
+  gulp.watch("source/js/vendor/*.js", ['scripts-vendor'], browserSync.reload);
 });
 
 // Compile Stylus into CSS, add vendor prefixes & auto-inject into browser
-gulp.task('css', () => {
-  gulp.src(cssSrc)
-  .pipe(plumber({errorHandler: handleError}))
-    .pipe(newer(cssDest))
-    .pipe(stylus({
-      use: [sGrid(), rupture()],
-      paths: ['source/stylus'],
-    }))
-    .pipe(rename('master.css'))
-    .pipe(autoprefixer({browsers: ['last 2 versions']}))
-    .pipe(gulp.dest(cssDest))
-    .pipe(browserSync.stream());
+gulp.task('postcss', () => {
+  const processors = [
+    postcssMap(opts),
+    postcssImport(),
+    postcssUrl(),
+    cssnext(),
+    // cssnano(),
+    browserReporter(),
+    reporter(),
+  ];
+  const settings = {
+    parser: sugarss,
+  };
+  gulp.src(postcssSrc)
+  // .pipe(newer(postcssDest))
+  .pipe(sourcemaps.init())
+  .pipe(postcss(processors, settings))
+  .pipe(rename({ extname: '.css' }))
+  .pipe(sourcemaps.write('.'))
+  .pipe(gulp.dest(postcssDest))
+  .pipe(browserSync.stream({match: '**/*.css'}));
 });
 
 // Concatenate scripts (we don't minify these)
@@ -99,8 +125,7 @@ gulp.task('scripts', () => {
     .pipe(plumber.stop())
     .pipe(concat('main.js')) // concat pulls all our files together before minifying them
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest(jsDest))
-    .pipe(browserSync.reload({stream: true}));
+    .pipe(gulp.dest(jsDest));
 });
 
 // Copy and optimise images from source to build
@@ -125,20 +150,14 @@ gulp.task('images', () => {
 gulp.task('scripts-vendor', () => {
   gulp.src(jsVendorSrc)
     .pipe(newer(jsVendorDest))
-    .pipe(gulp.dest(jsVendorDest))
-    .pipe(browserSync.reload({
-      stream: true,
-    }));
+    .pipe(gulp.dest(jsVendorDest));
 });
 
 // Copy changed data files to build dir
 gulp.task('data-copy', () => {
   gulp.src(dataSrc)
     .pipe(newer(dataDest))
-    .pipe(gulp.dest(dataDest))
-    .pipe(browserSync.reload({
-      stream: true,
-    }));
+    .pipe(gulp.dest(dataDest));
 });
 
 gulp.task('pug', () => {
@@ -147,10 +166,7 @@ gulp.task('pug', () => {
     .pipe(pug({
       pretty: true,
     }))
-    .pipe(gulp.dest('build'))
-    .pipe(browserSync.reload({
-      stream: true,
-    }));
+    .pipe(gulp.dest('build'));
 });
 
 // gulp.task('clean', () => {
@@ -162,7 +178,7 @@ gulp.task('clean', del.bind(null, 'build/*', {
 }));
 
 gulp.task('build', (callback) => {
-  runSequence('clean', ['data-copy', 'pug', 'images', 'scripts', 'scripts-vendor', 'css'],
+  runSequence('clean', ['data-copy', 'pug', 'images', 'scripts', 'scripts-vendor', 'postcss'],
     callback);
 });
 
