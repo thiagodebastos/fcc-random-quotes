@@ -31,7 +31,7 @@ const getQuote = (() => {
 
   function fetchQuote() {
     const quote = [];
-    $.getJSON('/data/quotes.json', (data) => {
+    $.getJSON('./data/quotes.json', (data) => {
       const num = random(0, data.quotes.length);
       quote.push(data.quotes);
       $(quoteBoxContent).text(quote[0][num].quote);
