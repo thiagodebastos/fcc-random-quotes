@@ -2,9 +2,9 @@
 ----
 - [ ] 1. Objective: Build a CodePen.io app that is functionally similar to this: [https://codepen.io/FreeCodeCamp/full/ONjoLe/](https://codepen.io/FreeCodeCamp/full/ONjoLe/).
 
-- [ ] 2. Rule #1: Don't look at the example project's code. Figure it out for yourself.
+- [ ] 2. Rule 1: Don't look at the example project's code. Figure it out for yourself.
 
-- [ ] 3. Rule #2: Fulfill the below user stories. Use whichever libraries or APIs you need. Give it your own personal style.
+- [ ] 3. Rule 2: Fulfill the below user stories. Use whichever libraries or APIs you need. Give it your own personal style.
 
 - [ ] 4. User Story: I can click a button to show me a new random quote.
 
