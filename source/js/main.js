@@ -1,14 +1,14 @@
-// cache ids
-const quoteButton = document.getElementById('quoteButton');
-const quoteBoxContent = document.getElementById('quotebox--quote-js');
-const quoteBoxAuthor = document.getElementById('quotebox--author-js');
 
 // Revealing module pattern
 const getQuote = (() => {
+  // cache ids
+  const quoteButton = document.getElementById('quoteButton');
+  const quoteBoxContent = document.getElementById('quotebox--quote-js');
+  const quoteBoxAuthor = document.getElementById('quotebox--author-js');
 
   // create a random number to be used when retriving quote index
-  const random = (min, max) => {
-    const x = Math.floor(Math.random() * (max - min)) + min;
+  const random = (numOfQuotes) => {
+    const x = Math.floor(Math.random() * (numOfQuotes));
     return x;
   };
   /*
@@ -35,6 +35,7 @@ const getQuote = (() => {
         they already exist. One way to do this is to use a
         `checked` variable and fetch data after an if statement.
   */
+  /*
   function fetchQuote() {
     const quote = [];
     $.getJSON('./data/quotes.json', (data) => {
@@ -44,10 +45,42 @@ const getQuote = (() => {
       $(quoteBoxAuthor).text(quote[0][num].author);
     });
   };
+*/
+
+  function promisedQuote(url) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function() {
+        resolve(this.responseText);
+      };
+      xhr.onerror = reject;
+      xhr.open('GET', url);
+      xhr.send();
+    });
+  }
+
+  promisedQuote('./data/quotes.json')
+  .then((result) => {
+    const quotes = JSON.parse(result); // quotesExist = true
+    const num = random(quotes.quotes.length);
+    const quote = quotes.quotes[num].quote;
+    const author = quotes.quotes[num].author;
+    quoteBoxContent.innerHTML = JSON.stringify(quote);
+    quoteBoxAuthor.innerHTML = JSON.stringify(author);
+    return quotes;
+  })
+  .catch((err) => {
+    console.log(`[Error]: ${err}`);
+  })
+
 
   // explicitly return public methods when this object is instantiated
   return {
-    quote: fetchQuote,
+    quote: promisedQuote,
   };
 })();
-quoteButton.addEventListener('click', getQuote.quote);
+
+function swapQuotes(){
+  return getQuote;
+}
+quoteButton.addEventListener('click', swapQuotes());
