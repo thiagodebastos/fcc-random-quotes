@@ -36,6 +36,7 @@ const getQuote = (() => {
       quote.push(data.quotes);
       $(quoteBoxContent).text(quote[0][num].quote);
       $(quoteBoxAuthor).text(quote[0][num].author);
+      $('a#tweet').attr('href',   `https://twitter.com/intent/tweet?text=${quote[0][num].quote}`);
     });
   };
 
